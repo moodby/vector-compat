@@ -14,11 +14,6 @@ package com.wnafee.vector.compat;
  * the License.
  */
 
-import com.wnafee.vector.R;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
@@ -34,14 +29,20 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v4.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
 
+import com.wnafee.vector.R;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.IOException;
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.collection.ArrayMap;
 
 //TODO: Add support for animator reversal
 public class AnimatedVectorDrawable extends DrawableCompat implements Animatable, Tintable {
@@ -152,8 +153,9 @@ public class AnimatedVectorDrawable extends DrawableCompat implements Animatable
         return super.setVisible(visible, restart);
     }
 
-    public void setLayoutDirection(int layoutDirection) {
-        mAnimatedVectorState.mVectorDrawable.setLayoutDirection(layoutDirection);
+    @Override
+    public boolean setSupportLayoutDirection(int layoutDirection) {
+        return mAnimatedVectorState.mVectorDrawable.setSupportLayoutDirection(layoutDirection);
     }
 
     @Override
@@ -301,8 +303,8 @@ public class AnimatedVectorDrawable extends DrawableCompat implements Animatable
                 }
                 if (copy.mAnimators != null) {
                     final int numAnimators = copy.mAnimators.size();
-                    mAnimators = new ArrayList<Animator>(numAnimators);
-                    mTargetNameMap = new ArrayMap<Animator, String>(numAnimators);
+                    mAnimators = new ArrayList<>(numAnimators);
+                    mTargetNameMap = new ArrayMap<>(numAnimators);
                     for (int i = 0; i < numAnimators; ++i) {
                         Animator anim = copy.mAnimators.get(i);
                         Animator animClone = anim.clone();
@@ -343,8 +345,8 @@ public class AnimatedVectorDrawable extends DrawableCompat implements Animatable
         Object target = mAnimatedVectorState.mVectorDrawable.getTargetByName(name);
         animator.setTarget(target);
         if (mAnimatedVectorState.mAnimators == null) {
-            mAnimatedVectorState.mAnimators = new ArrayList<Animator>();
-            mAnimatedVectorState.mTargetNameMap = new ArrayMap<Animator, String>();
+            mAnimatedVectorState.mAnimators = new ArrayList<>();
+            mAnimatedVectorState.mTargetNameMap = new ArrayMap<>();
         }
         mAnimatedVectorState.mAnimators.add(animator);
         mAnimatedVectorState.mTargetNameMap.put(animator, name);
@@ -458,4 +460,3 @@ public class AnimatedVectorDrawable extends DrawableCompat implements Animatable
     }
 
 }
-

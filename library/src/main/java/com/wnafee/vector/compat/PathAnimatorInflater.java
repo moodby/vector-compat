@@ -13,8 +13,10 @@ package com.wnafee.vector.compat;
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
+
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
@@ -22,6 +24,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
@@ -46,6 +49,8 @@ public class PathAnimatorInflater {
     private static final int TOGETHER = 0;
     private static final int SEQUENTIALLY = 1;
 
+    private static final int VALUE_TYPE_FLOAT = 0;
+    private static final int VALUE_TYPE_INT   = 1;
     private static final int VALUE_TYPE_PATH = 2;
 
     private static final boolean DBG_ANIMATOR_INFLATER = false;
@@ -220,15 +225,62 @@ public class PathAnimatorInflater {
 
         long startDelay = arrayAnimator.getInt(R.styleable.Animator_android_startOffset, 0);
 
-        int valueType = arrayAnimator.getInt(R.styleable.Animator_vc_valueType, 0);
+        int valueType = arrayAnimator.getInt(R.styleable.Animator_vc_valueType, VALUE_TYPE_FLOAT);
 
         TypeEvaluator evaluator = null;
 
-        // Must be a path animator by the time I reach here
-        if (valueType == VALUE_TYPE_PATH) {
+        boolean hasValueFrom = arrayAnimator.hasValue(R.styleable.Animator_android_valueFrom);
+        boolean hasValueTo = arrayAnimator.hasValue(R.styleable.Animator_android_valueTo);
+
+        /*
+         * Check if animating color by checking if valueFrom or valueTo has a
+         * leading '#' character.
+         */
+        boolean isValueFromColor = false;
+        boolean isValueToColor = false;
+        if (hasValueFrom) {
+            CharSequence text = arrayAnimator.getText(R.styleable.Animator_android_valueFrom);
+            isValueFromColor = text.length() != 0 && text.charAt(0) == '#';
+        }
+        if (hasValueTo) {
+            CharSequence text = arrayAnimator.getText(R.styleable.Animator_android_valueTo);
+            isValueToColor = text.length() != 0 && text.charAt(0) == '#';
+        }
+        boolean isColor = isValueFromColor || isValueToColor;
+        if (isColor) {
+            valueType = VALUE_TYPE_INT;
+        }
+
+        if (valueType == VALUE_TYPE_FLOAT) {
+            float valueFrom = arrayAnimator.getFloat(R.styleable.Animator_android_valueFrom, 0);
+            float valueTo = arrayAnimator.getFloat(R.styleable.Animator_android_valueTo, 0);
+
+            if (hasValueFrom && hasValueTo) {
+                anim.setFloatValues(valueFrom, valueTo);
+            } else if (hasValueTo) {
+                anim.setFloatValues(valueTo);
+            }
+        } else if (valueType == VALUE_TYPE_INT) {
+            int valueFrom;
+            int valueTo;
+            if (isColor) {
+                valueFrom = arrayAnimator.getColor(R.styleable.Animator_android_valueFrom, Color.BLACK);
+                valueTo = arrayAnimator.getColor(R.styleable.Animator_android_valueTo, Color.BLACK);
+                evaluator = new ArgbEvaluator();
+            } else {
+                valueFrom = arrayAnimator.getInt(R.styleable.Animator_android_valueFrom, 0);
+                valueTo = arrayAnimator.getInt(R.styleable.Animator_android_valueTo, 0);
+            }
+
+            if (hasValueFrom && hasValueTo) {
+                anim.setIntValues(valueFrom, valueTo);
+            } else if (arrayAnimator.hasValue(R.styleable.Animator_android_valueTo)) {
+                anim.setIntValues(valueTo);
+            }
+        } else if (valueType == VALUE_TYPE_PATH) {
             evaluator = setupAnimatorForPath(anim, arrayAnimator);
         } else {
-            throw new IllegalArgumentException("target is not a pathType target");
+            throw new IllegalArgumentException("Unsupported value type: " + valueType);
         }
 
         anim.setDuration(duration);

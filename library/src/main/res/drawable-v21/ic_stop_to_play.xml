@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_play_vector">
+    android:drawable="@drawable/ic_stop_vector">
 
     <target
         android:name="rotationGroup"
-        android:animation="@anim/play_to_pause_rotation" />
+        android:animation="@animator/stop_to_play_rotation" />
 
     <target
         android:name="v"
-        android:animation="@anim/play_to_pause_path" />
+        android:animation="@animator/stop_to_play_path" />
 </animated-vector>

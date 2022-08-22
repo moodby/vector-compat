@@ -18,7 +18,8 @@ package com.wnafee.vector.compat;
 
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 /**
  * Defines a simple shape, used for bounding graphical regions.
@@ -30,14 +31,10 @@ import android.support.annotation.NonNull;
  * @see android.view.View#setOutlineProvider(android.view.ViewOutlineProvider)
  */
 public final class Outline {
-    /** @hide */
     public Path mPath;
 
-    /** @hide */
     public Rect mRect;
-    /** @hide */
     public float mRadius;
-    /** @hide */
     public float mAlpha;
 
     /**
@@ -83,7 +80,6 @@ public final class Outline {
      * Currently, only Outlines that can be represented as a rectangle, circle,
      * or round rect support clipping.
      *
-     * @see {@link android.view.View#setClipToOutline(boolean)}
      */
     public boolean canClip() {
         return !isEmpty() && mRect != null;

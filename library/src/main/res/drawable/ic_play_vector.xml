@@ -17,9 +17,9 @@
         <path
             android:name="v"
             android:fillColor="#000000"
-            android:pathData="@string/path_play"
+            android:pathData="M 5, 18.06 L 12,18.06 L 12,5.94 L 12,5.94 L 5,18.06 z M 12,18.06 L 19,18.06 L 12,5.94 L 12,5.94 L 12,18.06 z"
 
             app:vc_fillColor="#000000"
-            app:vc_pathData="@string/path_play"/>
+            app:vc_pathData="M 5, 18.06 L 12,18.06 L 12,5.94 L 12,5.94 L 5,18.06 z M 12,18.06 L 19,18.06 L 12,5.94 L 12,5.94 L 12,18.06 z"/>
     </group>
 </vector>

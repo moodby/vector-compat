@@ -22,12 +22,13 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+
+import androidx.annotation.NonNull;
 
 public abstract class DrawableCompat extends Drawable {
 
-    int mLayoutDirection;
+    int mSupportLayoutDirection;
 
     public static abstract class ConstantStateCompat extends ConstantState {
 
@@ -77,14 +78,16 @@ public abstract class DrawableCompat extends Drawable {
         outRect.set(getBounds());
     }
 
-    public int getLayoutDirection() {
-        return mLayoutDirection;
+    public int getSupportLayoutDirection() {
+        return mSupportLayoutDirection;
     }
 
-    public void setLayoutDirection(int layoutDirection) {
-        if (getLayoutDirection() != layoutDirection) {
-            mLayoutDirection = layoutDirection;
+
+    public boolean setSupportLayoutDirection(int layoutDirection) {
+        if (getSupportLayoutDirection() != layoutDirection) {
+            mSupportLayoutDirection = layoutDirection;
         }
+        return false;
     }
 
     /**
@@ -106,8 +109,6 @@ public abstract class DrawableCompat extends Drawable {
     /**
      * Parses a {@link android.graphics.PorterDuff.Mode} from a tintMode
      * attribute's enum value.
-     *
-     * @hide
      */
     public static PorterDuff.Mode parseTintMode(int value, PorterDuff.Mode defaultMode) {
         switch (value) {
@@ -121,3 +122,4 @@ public abstract class DrawableCompat extends Drawable {
         }
     }
 }
+

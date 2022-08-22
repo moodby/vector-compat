@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 
+import androidx.core.content.ContextCompat;
+
 /**
  * Copyright (C) 2015 Wael Nafee
  * <p/>
@@ -28,11 +30,7 @@ public class ResourcesCompat {
     public static Drawable getDrawable(Context c, int resId) {
         Drawable d;
         try {
-            if (LOLLIPOP) {
-                d = c.getResources().getDrawable(resId, c.getTheme());
-            } else {
-                d = c.getResources().getDrawable(resId);
-            }
+            d = ContextCompat.getDrawable(c,resId);
         } catch (Resources.NotFoundException e) {
 
             try {
